@@ -160,7 +160,7 @@ class CollmexCustomer {
     this.ort = "",
     this.bemerkung = "",
     this.inaktiv = 0,
-    this.land = "",
+    this.land = "DE",
     this.telefon = "",
     this.telefax = "",
     this.email = "",

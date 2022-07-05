@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:salesapp/services/firestore.dart';
 import 'package:salesapp/services/models.dart';
+import 'dart:convert';
 
 class Collmex {
   void syncCustomers(CollmexLogin collmexLogin) async {
@@ -76,11 +77,10 @@ class Collmex {
     collmexCustMap.forEach((k, v) => collCustList.add(v.toString()));
     csvList.add(collCustList);
 
-    String csvString = const ListToCsvConverter(fieldDelimiter: ';', eol: '\\n')
-        .convert(csvList);
-    csvString += '\\n';
+    String csvString =
+        const ListToCsvConverter(fieldDelimiter: ';').convert(csvList);
+
     debugPrint(csvString);
-    String csvBody = Uri.encodeComponent(csvString);
 
     final response = await http.post(
         Uri.parse(
@@ -88,12 +88,21 @@ class Collmex {
         headers: <String, String>{
           'Content-Type': 'text/csv',
         },
-        body: csvBody);
+        body: csvString,
+        encoding: Encoding.getByName("iso_8859-1"));
+
 
     if (response.statusCode == 200) {
-      print(response);
+      debugPrint(response.body);
+      List<List<dynamic>> rowsAsListOfValues =
+          const CsvToListConverter(fieldDelimiter: ';').convert(response.body);
+      var row = rowsAsListOfValues[0];
+      if (row[0] == 'NEW_OBJECT_ID') {
+        customer.customerId = row[1];
+      }
+      await FirestoreService().saveCustomer(customer);
     } else {
-      print(response);
+      debugPrint(response.body);
       throw Exception('Failed to connect to Collmex');
     }
   }

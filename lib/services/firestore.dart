@@ -98,10 +98,10 @@ class FirestoreService {
   }
 
   Future<void> saveCustomer(Customer customer) async {
-    // if (customer.customerId == 0) {
-    //   customer.customerId = await getHighestCustomerID();
-    //   customer.customerId += 1;
-    // }
+    if (customer.customerId == 0) {
+      customer.customerId = await getHighestCustomerID();
+      customer.customerId += 1;
+    }
     var ref = _db
         .collection('users')
         .doc(_firebaseuser.uid)
@@ -110,11 +110,11 @@ class FirestoreService {
     return ref.set(customer.toJson(), SetOptions(merge: true));
   }
 
-  // Future<int> getHighestCustomerID() async {
-  //   var ref =
-  //       _db.collection('users').doc(_firebaseuser.uid).collection('customers');
-  //   var query = ref.orderBy('customerId').limitToLast(1);
-  //   var snapshot = await query.get();
-  //   return int.parse(snapshot.docs.single.id);
-  // }
+  Future<int> getHighestCustomerID() async {
+    var ref =
+        _db.collection('users').doc(_firebaseuser.uid).collection('customers');
+    var query = ref.orderBy('customerId').limitToLast(1);
+    var snapshot = await query.get();
+    return int.parse(snapshot.docs.single.id);
+  }
 }

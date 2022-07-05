@@ -71,7 +71,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
                   keyboardType: TextInputType.number,
                   textInputAction: TextInputAction.next,
                   onSaved: (value) {
-                    context.read<CurrentOrder>().customer.zipcode = value = '';
+                    context.read<CurrentOrder>().customer.zipcode = value ?? '';
                   }),
               TextFormField(
                   decoration: const InputDecoration(labelText: 'Stadt'),
@@ -114,8 +114,9 @@ class _CustomerScreenState extends State<CustomerScreen> {
 
   void _saveCustomer() {
     _form.currentState?.save();
-    UserData _userdata = context.read<UserDataProvider>().userData;
-    context.read<CurrentOrder>().saveCustomer(_userdata.collmex!);
+    // UserData _userdata = context.read<UserDataProvider>().userData;
+    // context.read<CurrentOrder>().saveCustomer(_userdata.collmex!);
+    context.read<CurrentOrder>().saveCustomer();
     Navigator.pop(context);
   }
 

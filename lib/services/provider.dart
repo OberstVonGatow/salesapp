@@ -115,11 +115,15 @@ class CurrentOrder with ChangeNotifier {
     }
   }
 
-  void saveCustomer(CollmexLogin collmexLogin) async {
-    await FirestoreService().saveCustomer(_order.customer!);
-    Collmex().modifyCustomer(_order.customer!, collmexLogin);
+  void saveCustomer() async {
+    await FirestoreService().saveCustomer(customer);
     notifyListeners();
   }
+
+  // void saveCustomer(CollmexLogin collmexLogin) async {
+  //   Collmex().modifyCustomer(_order.customer!, collmexLogin);
+  //   notifyListeners();
+  // }
 }
 
 class UserDataProvider with ChangeNotifier {
